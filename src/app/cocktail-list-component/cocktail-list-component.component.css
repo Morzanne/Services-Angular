@@ -1,0 +1,12 @@
+.listing{
+    border: 2px solid black;
+    border-radius: 10% 10%;
+    background-color: rgb(10, 230, 230);
+    box-shadow: 12px 12px 2px 1px rgba(108, 108, 228, 0.2);
+}
+
+h1{
+    text-align: center;
+    padding-top: 5%;
+    padding-bottom: 10%;
+}
