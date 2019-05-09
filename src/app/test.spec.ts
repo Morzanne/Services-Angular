@@ -1,6 +1,8 @@
+
+
 import { TestBed, async } from '@angular/core/testing';
-import { CocktailListComponent } from './cocktail-list-component/cocktail-list-component.component';
-import { CocktailService } from '../app/cocktail-service.service';
+import { AppComponent } from './app.component';
+import { NasaService } from './nasa.service';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import {Observable, of} from "rxjs";
@@ -10,64 +12,56 @@ describe('Quest Test Suite', () => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule, BrowserModule],
       declarations: [
-        CocktailListComponent
+        AppComponent
       ],
     }).compileComponents();
   }));
 
   fit('service should be created', () => {
-    const service: CocktailService = TestBed.get(CocktailService);
+    const service: NasaService = TestBed.get(NasaService);
     expect(service).toBeTruthy();
   });
 
-  fit('service should have a "getCocktails" method which returns an Observable<Cocktail[]> object', () => {
-    const service: CocktailService = TestBed.get(CocktailService);
-    service.getCocktails().subscribe(
-      (param_cocktails: any[]) => {
-        expect(param_cocktails.length).toBeGreaterThan(0);
+  fit('service should have a "getImageOfTheDay" method which returns an Observable<string> object', () => {
+    const service: NasaService = TestBed.get(NasaService);
+    service.getImageOfTheDay().subscribe(
+      (param_img: string) => {
+        expect(param_img).toBeTruthy();
       }
     )
   });
 
-  fit('should create a CocktailListComponent instance', async(() => {
-    const fixture = TestBed.createComponent(CocktailListComponent);
+  fit('should create a AppComponent instance', async(() => {
+    const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
   }));
 
   fit(
-    'component should have a public property named "cocktails"',
+    'component should have a public property named "imgOfTheDay"',
     async(
       () => {
-        const fixture = TestBed.createComponent(CocktailListComponent);
+        const fixture = TestBed.createComponent(AppComponent);
         fixture.detectChanges();
-        expect(fixture.componentInstance.cocktail).toBeTruthy();
+        expect(fixture.componentInstance.imgOfTheDay).toBeDefined();
       }
     )
   );
 
   fit(
-    'component should display at least one cocktail',
+    'component should display an image',
     async(
       () => {
-        const fixture = TestBed.createComponent(CocktailListComponent);
-        const service: CocktailService = TestBed.get(CocktailService);
-        const mock:Observable<any> = of([
-          {
-            name: "bloody mary", 
-            price: 1, 
-            img: "https://i.4pcdn.org/s4s/1398123404333.gif"
-          }
-        ]);
+        const fixture = TestBed.createComponent(AppComponent);
+        const service: NasaService = TestBed.get(NasaService);
+        const mock:Observable<string> = of( "https://apod.nasa.gov/apod/image/1903/IC405_Abolfath_3171.jpg");
 
-        spyOn(service, "getCocktails").and.returnValue( mock );
+        spyOn(service, "getImageOfTheDay").and.returnValue( mock );
 
         fixture.detectChanges();
         const compiled = fixture.debugElement.nativeElement;
-        const content = compiled.textContent;
-        const first = fixture.componentInstance.cocktail[0];
-        console.log(fixture.componentInstance.cocktail, first);
-        expect(content).toContain(first.name);
+        const content = compiled.querySelector("img").src;
+        expect(content).toContain(fixture.componentInstance.imgOfTheDay);
       }
     )
   );
